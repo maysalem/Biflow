@@ -1,66 +1,71 @@
 {
-  "summary": "L'analyse globale de la qualité des données Olist révèle un score général très élevé de 97.8% avec des relations inter-tables parfaitement intégrées (0 à 13 lignes orphelines identifiées). Les principaux points de vigilance concernent la conversion en datetime de 11 colonnes de dates stockées en texte, la présence de 26.18 % de doublons dans la table de géolocalisation (liés aux codes postaux), et quelques anomalies mineures de statuts de commande. Le périmètre temporel montre des mois incomplets en début et fin de période qu'il faudra exclure pour les analyses tendancielles. Enfin, l'absence de tables de stock, de coût d'achat et de trafic web nécessite des arbitrages métier clairs.",
+  "summary": "Le jeu de données Olist présente une qualité globale excellente (score de 97.8 %) avec des relations intègres entre les tables principales, mais nécessite un nettoyage ETL rigoureux. Les principales corrections portent sur la conversion des colonnes de dates stockées en texte, la gestion des commandes annulées ou indisponibles pour le calcul du chiffre d'affaires, et la traduction de deux catégories manquantes. La couverture temporelle révèle également des mois partiels (fin 2016 et fin 2018) qu'il faudra exclure des analyses de tendances. Enfin, le projet présente des manques structurels (absence de coûts d'achat, de stocks, de sessions et d'événements externes) qui nécessiteront des choix méthodologiques.",
   "fit_for_project": {
-    "reasoning": "Mal quelques anomalies mineures sur les dates en texte, les doublons de géolocalisation et des lacunes métier (stock, marge), l'intégrité relationnelle et la richesse des tables Olist permettent de répondre à la quasi-totalité des objectifs BI du projet.",
-    "verdict": "yes"
+    "verdict": "yes",
+    "reasoning": "Malgré quelques anomalies mineures (commandes sans articles, doublons dans la géolocalisation) et des manques fonctionnels (marge, stock), le schéma couvre parfaitement les besoins essentiels du projet (ventes, commandes, paiements, avis clients, délais de livraison)."
   },
   "issues": [
     {
-      "action_for_etl": "Convertir les colonnes de type texte en types datetime de manière systémique lors du chargement.",
-      "diagnosis": "11 colonnes de dates (achats, livraisons, avis, etc.) sont stockées sous forme de chaînes de caractères (object/text) et bloquent les calculs temporels.",
-      "evidence": "list_flagged_columns (tables olist_orders_dataset, olist_order_items_dataset, olist_order_reviews_dataset)",
       "id": "I1",
-      "relevant_for_kpis": true,
+      "table": "olist_orders_dataset",
+      "column": "order_purchase_timestamp",
       "severity": "high",
-      "table": "multiple",
-      "verified": false,
+      "relevant_for_kpis": true,
+      "diagnosis": "Les dates d'achat et de suivi sont stockées sous forme de chaînes de caractères (texte) au lieu du type datetime.",
+      "evidence": "list_flagged_columns montre que order_purchase_timestamp, order_approved_at, order_delivered_carrier_date, order_delivered_customer_date et order_estimated_delivery_date sont stockées en texte.",
+      "action_for_etl": "Convertir toutes les colonnes de dates (commandes, articles, avis) au format datetime lors du chargement.",
+      "verified": true,
       "has_evidence": true,
       "ungrounded_numbers": []
     },
     {
-      "action_for_etl": "Dédupliquer la table de géolocalisation sur le code postal (ex. en conservant la première occurrence ou en faisant une moyenne des coordonnées) pour l'utiliser en dimension propre.",
-      "diagnosis": "La table de géolocalisation contient 261 831 lignes en double (26.18 %) en raison de multiples entrées par code postal.",
-      "evidence": "get_profile_overview & list_flagged_columns (olist_geolocation_dataset : 261831 doublons sur 1000163 lignes)",
       "id": "I2",
-      "relevant_for_kpis": false,
-      "severity": "medium",
-      "table": "olist_geolocation_dataset",
+      "table": "olist_orders_dataset",
+      "column": "order_status",
+      "severity": "high",
+      "relevant_for_kpis": true,
+      "diagnosis": "Le calcul du chiffre d'affaires et du nombre de commandes valides doit exclure les commandes annulées ('canceled') ou indisponibles ('unavailable') pour éviter de fausser les indicateurs financiers.",
+      "evidence": "get_value_counts indique 625 commandes 'canceled' et 609 'unavailable' sur 99441 commandes.",
+      "action_for_etl": "Filtrer les tables de faits pour exclure order_status IN ('canceled', 'unavailable') lors du calcul du chiffre d'affaires et du panier moyen.",
       "verified": true,
       "has_evidence": true,
       "ungrounded_numbers": []
     },
     {
-      "action_for_etl": "Filtrer et exclure des calculs de chiffre d'affaires les commandes dont le statut est 'canceled' ou 'unavailable'. Pour les commandes livrées sans date client, utiliser la date estimée ou ignorer selon le besoin.",
-      "diagnosis": "Présence de commandes 'delivered' sans date de livraison client (8 cas) et de commandes sans lignes d'articles (775 cas, principalement 'unavailable' ou 'canceled').",
-      "evidence": "get_business_rule_results (8 violations sur commandes delivered sans date, 775 sans lignes d'articles)",
       "id": "I3",
-      "relevant_for_kpis": true,
+      "table": "olist_geolocation_dataset",
+      "column": "geolocation_zip_code_prefix",
       "severity": "medium",
-      "table": "olist_orders_dataset",
-      "verified": true,
-      "has_evidence": true,
-      "ungrounded_numbers": []
-    },
-    {
-      "action_for_etl": "Exclure des analyses de tendances et de variations mensuelles les mois marginaux identifiés (ex. 2016-09, 2016-12, 2018-09, 2018-10) pour éviter de fausses alertes de baisse.",
-      "diagnosis": "La couverture temporelle présente des mois début et fin de période avec un volume de commandes très faible, traduisant une période incomplète.",
-      "evidence": "get_date_coverage (olist_orders_dataset, order_purchase_timestamp : 2016-09 avec 4 lignes, 2018-09 avec 16 lignes, etc.)",
-      "id": "I4",
-      "relevant_for_kpis": true,
-      "severity": "medium",
-      "table": "olist_orders_dataset",
-      "verified": true,
-      "has_evidence": true,
-      "ungrounded_numbers": []
-    },
-    {
-      "action_for_etl": "Ajouter les traductions manquantes dans la table de correspondance ou appliquer un mapping de secours dans l'ETL.",
-      "diagnosis": "13 produits répartis sur 2 catégories distinctes ('pc_gamer' et 'portateis_cozinha_e_preparadores_de_alimentos') n'ont pas de correspondance dans la table de traduction.",
-      "evidence": "get_relations_report & get_category_translation_status (2 catégories distinctes, 13 lignes orphelines dans olist_products_dataset)",
-      "id": "I5",
       "relevant_for_kpis": false,
-      "severity": "low",
+      "diagnosis": "Présence de 261 831 lignes en double (26.18 %) dans la table de géolocalisation, ce qui peut alourdir les jointures géographiques.",
+      "evidence": "get_profile_overview indique 261831 doublons (26.18 %) sur 1 000 163 lignes dans olist_geolocation_dataset.",
+      "action_for_etl": "Dédoublonner la table geolocation (par exemple en faisant un GROUP BY sur zip_code_prefix pour moyenner les coordonnées lat/lng ou conserver une ligne unique par code postal).",
+      "verified": true,
+      "has_evidence": true,
+      "ungrounded_numbers": []
+    },
+    {
+      "id": "I4",
       "table": "olist_products_dataset",
+      "column": "product_category_name",
+      "severity": "low",
+      "relevant_for_kpis": true,
+      "diagnosis": "13 produits répartis sur 2 catégories ('pc_gamer' et 'portateis_cozinha_e_preparadores_de_alimentos') n'ont pas de traduction dans la table de correspondance.",
+      "evidence": "get_relations_report et get_category_translation_status signalent 13 lignes orphelines (0.04 %) et 2 catégories distinctes non traduites.",
+      "action_for_etl": "Ajouter manuellement les traductions anglaises correspondantes dans la table de correspondance lors de l'ETL.",
+      "verified": true,
+      "has_evidence": true,
+      "ungrounded_numbers": []
+    },
+    {
+      "id": "I5",
+      "table": "olist_orders_dataset",
+      "column": "order_delivered_customer_date",
+      "severity": "low",
+      "relevant_for_kpis": true,
+      "diagnosis": "8 commandes au statut 'delivered' n'ont pas de date de livraison client renseignée, et 6 commandes non livrées ont une date de livraison.",
+      "evidence": "get_business_rule_results indique 8 violations pour 'Commandes delivered sans date de livraison' et 6 pour 'Commandes non delivered avec une date de livraison'.",
+      "action_for_etl": "Corriger ou imputer ces lignes lors de l'ETL (ex: exclure ou marquer comme 'unknown' pour les délais, ou inférer si possible).",
       "verified": true,
       "has_evidence": true,
       "ungrounded_numbers": []
@@ -69,50 +74,51 @@
   "etl_plan": [
     {
       "order": 1,
-      "step": "Chargement et nettoyage initial de la table orders : conversion des colonnes de dates en datetime, exclusion des statuts annulés/indisponibles pour le CA.",
+      "step": "Ingestion et typage des dates",
       "tables": [
-        "olist_orders_dataset"
-      ]
-    },
-    {
-      "order": 2,
-      "step": "Chargement des tables de dimension (customers, sellers, products, translation) avec application des traductions manquantes proposées.",
-      "tables": [
-        "olist_customers_dataset",
-        "olist_sellers_dataset",
-        "olist_products_dataset",
-        "product_category_name_translation"
-      ]
-    },
-    {
-      "order": 3,
-      "step": "Chargement et typage des tables de faits (order_items, order_payments, order_reviews) avec conversion des dates en texte.",
-      "tables": [
+        "olist_orders_dataset",
         "olist_order_items_dataset",
-        "olist_order_payments_dataset",
         "olist_order_reviews_dataset"
       ]
     },
     {
-      "order": 4,
-      "step": "Déduplication de la table geolocation sur le code postal pour créer une dimension géographique propre.",
+      "order": 2,
+      "step": "Nettoyage et déduplication de la géolocalisation",
       "tables": [
         "olist_geolocation_dataset"
+      ]
+    },
+    {
+      "order": 3,
+      "step": "Enrichissement des catégories de produits (intégration des traductions manquantes)",
+      "tables": [
+        "product_category_name_translation",
+        "olist_products_dataset"
+      ]
+    },
+    {
+      "order": 4,
+      "step": "Création de la table de faits unifiée (filtrage des statuts annulés/indisponibles pour le CA)",
+      "tables": [
+        "olist_orders_dataset",
+        "olist_order_items_dataset",
+        "olist_order_payments_dataset",
+        "olist_order_reviews_dataset"
       ]
     }
   ],
   "proposed_translations": [
     {
-      "confidence": "high",
-      "english": "pc_gamer",
       "original": "pc_gamer",
+      "english": "pc_gamer",
+      "confidence": "high",
       "verified": true,
       "status": "proposition à valider par un humain"
     },
     {
-      "confidence": "high",
-      "english": "portable_kitchen_and_food_preparers",
       "original": "portateis_cozinha_e_preparadores_de_alimentos",
+      "english": "portable_kitchen_and_food_preparers",
+      "confidence": "medium",
       "verified": true,
       "status": "proposition à valider par un humain"
     }
@@ -120,28 +126,41 @@
   "confidence": "high",
   "data_gaps": [
     {
+      "need": "Coût d'achat des produits et marge commerciale",
       "kpis_affected": [
         "marge",
-        "rotation du stock"
+        "bénéfice net",
+        "rentabilité par vendeur"
       ],
-      "need": "Coûts d'achat des produits et niveaux de stock en temps réel",
       "options": [
-        "Simuler un coût d'achat forfaitaire ou un pourcentage du prix de vente",
-        "Retirer les KPI de marge et de rotation du stock du périmètre BI"
+        "Appliquer un taux de marge forfaitaire estimé par catégorie (ex: 30%)",
+        "Retirer le KPI de marge du dashboard"
       ],
-      "recommendation": "Simuler une marge estimée (ex. 30% du prix de vente) pour permettre l'analyse de rentabilité tout en signalant la simulation."
+      "recommandation": "Simuler un coût d'achat proportionnel au prix de vente (ex: 60% du prix) de manière déclarée pour permettre l'analyse de la marge brute."
     },
     {
+      "need": "Gestion des stocks et rotation du stock",
       "kpis_affected": [
-        "détection des tendances",
-        "explication des variations (événements)"
+        "rotation du stock",
+        "ruptures de stock"
       ],
-      "need": "Données de trafic web (sessions de visite, clics) et calendrier des événements externes / campagnes marketing",
       "options": [
-        "Utiliser uniquement le volume des commandes et des paniers comme proxy du trafic",
-        "Intégrer un calendrier externe des jours fériés et grands événements brésiliens (Black Friday, Noël)"
+        "Estimer la rotation à partir des dates de première et dernière vente des articles",
+        "Retirer le KPI de rotation du stock"
       ],
-      "recommendation": "Intégrer un calendrier des jours fériés brésiliens pour expliquer la saisonnalité et utiliser le volume des commandes comme proxy d'audience."
+      "recommandation": "Retirer le KPI de rotation du stock ou le documenter comme non mesurable en l'absence de données de inventaire."
+    },
+    {
+      "need": "Sessions de visite et trafic web",
+      "kpis_affected": [
+        "taux de conversion",
+        "trafic du site"
+      ],
+      "options": [
+        "Simuler un trafic proportionnel au nombre de commandes",
+        "Retirer le taux de conversion"
+      ],
+      "recommandation": "Retirer le taux de conversion et les analyses de trafic web, le dataset se concentrant exclusivement sur les transactions."
     }
   ],
   "trace": [
@@ -151,32 +170,32 @@
       "args": {}
     },
     {
-      "step": 2,
+      "step": 1,
       "tool": "get_profile_overview",
       "args": {}
     },
     {
-      "step": 3,
+      "step": 1,
       "tool": "list_flagged_columns",
       "args": {}
     },
     {
-      "step": 4,
+      "step": 1,
       "tool": "get_business_rule_results",
       "args": {}
     },
     {
-      "step": 5,
+      "step": 1,
       "tool": "get_relations_report",
       "args": {}
     },
     {
-      "step": 6,
+      "step": 1,
       "tool": "get_category_translation_status",
       "args": {}
     },
     {
-      "step": 7,
+      "step": 1,
       "tool": "sample_rows",
       "args": {
         "n": 5,
@@ -184,7 +203,7 @@
       }
     },
     {
-      "step": 8,
+      "step": 1,
       "tool": "get_value_counts",
       "args": {
         "column": "order_status",
@@ -192,7 +211,7 @@
       }
     },
     {
-      "step": 9,
+      "step": 1,
       "tool": "get_date_coverage",
       "args": {
         "column": "order_purchase_timestamp",
@@ -200,19 +219,19 @@
       }
     },
     {
-      "step": 10,
+      "step": 1,
       "tool": "get_value_counts",
       "args": {
-        "column": "payment_type",
-        "table": "olist_order_payments_dataset"
+        "table": "olist_order_payments_dataset",
+        "column": "payment_type"
       }
     },
     {
-      "step": 11,
+      "step": 1,
       "tool": "get_value_counts",
       "args": {
-        "table": "olist_order_reviews_dataset",
-        "column": "review_score"
+        "column": "review_score",
+        "table": "olist_order_reviews_dataset"
       }
     }
   ]

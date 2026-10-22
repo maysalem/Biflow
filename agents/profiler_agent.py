@@ -14,7 +14,7 @@ from langchain_core.tools import tool
 from profiler import OUT_DIR, RAW_DIR, ROOT, category_translation_status, load_profile
 
 load_dotenv(ROOT / ".env")
-# Le profil est recalculé automatiquement s'il est périmé (ou avec l'option --refresh)
+
 PROFILE = load_profile(refresh="--refresh" in sys.argv)
 
 
@@ -345,7 +345,31 @@ def run_profiler_agent(max_steps: int = 18) -> dict:
             outputs.append(result)
             messages.append(ToolMessage(content=result, tool_call_id=call["id"]))
     raise RuntimeError("L'agent n'a pas conclu dans le nombre d'étapes autorisé.")
+def run() -> dict:
+    """Point d'entrée pour l'orchestrateur."""
+    decision_file = OUT_DIR / "profiler_agent_decision.json"
 
+    # --reuse : relit la dernière décision au lieu de rappeler le LLM (économise le quota)
+    if "--reuse" in sys.argv and decision_file.exists():
+        decision = json.loads(decision_file.read_text(encoding="utf-8"))
+        reused = True
+    else:
+        decision = run_profiler_agent()
+        write_agent_report(decision)
+        reused = False
+
+    issues = decision.get("issues", [])
+    verdict = decision.get("fit_for_project", {}).get("verdict", "?")
+    return {
+        "ok": True,
+        "reused": reused,
+        "verdict": verdict,
+        "issues": len(issues),
+        "high_issues": sum(1 for i in issues if i.get("severity") == "high"),
+        "data_gaps": len(decision.get("data_gaps", [])),
+        "stop": verdict == "no",          # l'orchestrateur s'arrête si les données sont inexploitables
+        "outputs": [str(decision_file), str(OUT_DIR / "agent_report.md")],
+    }
 
 # ============================================================================
 # RAPPORTS
