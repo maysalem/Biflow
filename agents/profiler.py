@@ -238,10 +238,18 @@ def business_rules(tables: dict) -> list:
             add("Total articles + livraison différent du total payé (écart > 1)",
                 "olist_order_items_dataset", gap.sum(), len(gap),
                 "à investiguer avant de choisir la définition du chiffre d'affaires (articles ou paiements)")
+    def r_late_delivery():
+        if has(orders, "order_delivered_customer_date", "order_estimated_delivery_date"):
+            a = pd.to_datetime(orders["order_delivered_customer_date"], errors="coerce")
+            b = pd.to_datetime(orders["order_estimated_delivery_date"], errors="coerce")
+            both = a.notna() & b.notna()
+            add("Commandes livrées après la date de livraison estimée",
+                "olist_orders_dataset", (a[both] > b[both]).sum(), both.sum(),
+                "mesure des retards pour le KPI de délais de livraison", informative=True)
 
     for rule in (r_missing_delivery_by_status, r_delivered_without_date, r_nondelivered_with_date,
                  r_orders_without_items, r_orders_without_payment, r_delivery_before_purchase,
-                 r_nonpositive_price, r_zero_weight, r_payment_reconciliation):
+                 r_nonpositive_price, r_zero_weight, r_payment_reconciliation, r_late_delivery):
         try:
             rule()
         except Exception as e:  # une règle qui échoue ne doit pas bloquer le profil

@@ -1120,6 +1120,15 @@
       "pct": 0.252,
       "comment": "à investiguer avant de choisir la définition du chiffre d'affaires (articles ou paiements)",
       "informative": false
+    },
+    {
+      "rule": "Commandes livrées après la date de livraison estimée",
+      "table": "olist_orders_dataset",
+      "violations": 7827,
+      "total": 96476,
+      "pct": 8.113,
+      "comment": "mesure des retards pour le KPI de délais de livraison",
+      "informative": true
     }
   ],
   "relation_detection_eval": {

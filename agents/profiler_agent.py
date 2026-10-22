@@ -22,9 +22,6 @@ def _j(obj) -> str:
     return json.dumps(obj, ensure_ascii=False, default=str)
 
 
-# ============================================================================
-# OUTILS (tous déterministes : le LLM les appelle, il ne calcule rien lui-même)
-# ============================================================================
 @tool
 def get_schema() -> str:
     """Schéma de toutes les tables : colonnes avec leur type, clés candidates, nombre de lignes. Sert à vérifier quelles données existent (ex. coût d'achat, stock, événements, sessions)."""
@@ -140,15 +137,17 @@ TOOLS = [get_schema, get_profile_overview, list_flagged_columns, get_column_prof
 TOOLS_BY_NAME = {t.name: t for t in TOOLS}
 
 
-# ============================================================================
-# CONSIGNES DE L'AGENT
-# ============================================================================
+
 SYSTEM_PROMPT = """Tu es le Data Profiler Agent d'un pipeline BI multi-agents (projet BIFlow).
 Jeu de données : Olist, marketplace e-commerce brésilien en 9 tables (clients, commandes, lignes de
 commande, paiements, avis, produits, vendeurs, géolocalisation, traduction des catégories).
-Objectifs métier du MVP : chiffre d'affaires, nombre de commandes, panier moyen, best-sellers, marge,
-rotation du stock, détection des baisses de ventes, explication des variations (événements).
-Tu agis AVANT l'orchestrateur. Ta décision sera lue par l'Orchestrator, l'agent ETL et l'Auditor.
+Périmètre du projet : TOUS les produits et toutes les catégories du jeu de données, sans filtre de domaine.
+Objectifs métier du projet COMPLET : chiffre d'affaires, nombre de commandes, panier moyen, best-sellers,
+marge, rotation du stock, ventes par catégorie / vendeur / région, délais et retards de livraison,
+satisfaction client (avis), détection des tendances et des baisses de ventes, détection d'anomalies,
+explication des variations (événements, saisonnalité), et traçabilité de tous les calculs.
+Tu agis AVANT l'orchestrateur. Ta décision sera lue par l'Orchestrator, l'agent ETL, l'agent KPI,
+l'agent BI Analyst et l'Auditor.
 
 DÉMARCHE OBLIGATOIRE (appelle les outils, au minimum dans cet ordre) :
 1. get_schema, get_profile_overview, list_flagged_columns
@@ -156,7 +155,8 @@ DÉMARCHE OBLIGATOIRE (appelle les outils, au minimum dans cet ordre) :
 3. get_category_translation_status et sample_rows sur product_category_name_translation (style des noms anglais)
 4. get_value_counts(olist_orders_dataset, order_status)
 5. get_date_coverage(olist_orders_dataset, order_purchase_timestamp)
-6. En cas de doute : get_column_profile, get_value_counts ou sample_rows avant de conclure.
+6. get_value_counts(olist_order_payments_dataset, payment_type) et get_value_counts(olist_order_reviews_dataset, review_score)
+7. En cas de doute : get_column_profile, get_value_counts ou sample_rows avant de conclure.
 
 RÈGLES :
 - N'invente AUCUN nombre. Chaque problème doit avoir un champ "evidence" qui cite l'outil et les chiffres exacts.
@@ -165,27 +165,32 @@ RÈGLES :
 - N'affirme pas qu'un manque est "normal" sans preuve : appuie-toi sur les règles métier et sur la répartition
   par statut. Signale aussi les anomalies réelles (ex. commandes livrées sans date).
 - Jugement métier : une latitude ou longitude négative au Brésil est normale ; les colonnes de texte libre des avis
-  sont facultatives ; la géolocalisation n'est pas utilisée par les KPI du MVP ; un chiffre d'affaires ne doit pas
-  compter les commandes annulées ou indisponibles (indique l'action ETL correspondante).
+  sont facultatives ; un chiffre d'affaires ne doit pas compter les commandes annulées ou indisponibles
+  (indique l'action ETL correspondante). La géolocalisation sert aux analyses par région : juge si la table est
+  exploitable (doublons par code postal) ou si les colonnes d'état et de ville des clients suffisent.
 - Valeurs atypiques = à examiner, pas des erreurs. Dates ou nombres stockés en texte = problème pour l'ETL.
-- Compare le schéma aux besoins du MVP : si aucune colonne ne porte le coût d'achat, le stock, les événements
-  (promotions, lancements) ou les sessions de visite, déclare-le dans "data_limitations" et dis quels KPI sont affectés.
-- Si la couverture temporelle montre des mois incomplets, signale le risque de fausses alertes de baisse.
-- Gravité : high = fausserait un KPI du MVP si non traité ; medium = dégrade un segment ou une analyse ;
-  low = mineur ou hors périmètre du MVP.
+- Évalue chaque besoin du projet (liste des objectifs ci-dessus) : pour chacun, vérifie dans le schéma que les
+  colonnes nécessaires existent. Un besoin sans donnée (coût d'achat, stock, événements, sessions de visite, etc.)
+  va dans "data_gaps" avec les KPI touchés, les options possibles (donnée simulée et déclarée, donnée externe,
+  KPI retiré) et ta recommandation. Ce sont des décisions à faire prendre par un humain, pas des détails.
+- Si la couverture temporelle montre des mois incomplets, signale le risque de fausses alertes de baisse
+  et dis comment l'agent BI Analyst doit les exclure.
+- Gravité : high = fausserait un KPI du projet si non traité ; medium = dégrade un segment ou une analyse ;
+  low = mineur.
 - Traductions : pour chaque catégorie non traduite, propose une traduction anglaise dans le même style que la
   colonne anglaise de la table de traduction. Ce sont des PROPOSITIONS à faire valider par un humain.
 - N'attribue jamais un problème à une colonne sans l'avoir vue dans les sorties des outils.
 
 SORTIE : quand tu as fini, réponds UNIQUEMENT avec un JSON valide, sans texte autour, de la forme :
 {"summary": "4 à 6 phrases en français",
- "fit_for_mvp": {"verdict": "yes|partially|no", "reasoning": "..."},
+ "fit_for_project": {"verdict": "yes|partially|no", "reasoning": "..."},
  "issues": [{"id": "I1", "table": "...", "column": "... ou null", "severity": "high|medium|low",
-             "relevant_for_mvp": true, "diagnosis": "...", "evidence": "outil + chiffres exacts",
+             "relevant_for_kpis": true, "diagnosis": "...", "evidence": "outil + chiffres exacts",
              "action_for_etl": "..."}],
  "etl_plan": [{"order": 1, "step": "...", "tables": ["..."]}],
  "proposed_translations": [{"original": "...", "english": "...", "confidence": "high|medium|low"}],
- "data_limitations": ["..."]}
+ "confidence": "high|medium|low"}],
+ "data_gaps": [{"need": "...", "kpis_affected": ["..."], "options": ["..."], "recommendation": "..."}]}
 Classe les issues par priorité décroissante."""
 
 
@@ -350,9 +355,9 @@ def write_agent_report(decision: dict) -> None:
     (OUT_DIR / "profiler_agent_decision.json").write_text(
         json.dumps(decision, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    fit = decision.get("fit_for_mvp", {})
+    fit = decision.get("fit_for_project", {})
     L = ["# Synthèse du Data Profiler Agent", "", decision.get("summary", ""), "",
-         f"**Adéquation au MVP : {fit.get('verdict', '?')}** - {fit.get('reasoning', '')}", "",
+         f"**Adéquation au projet : {fit.get('verdict', '?')}** - {fit.get('reasoning', '')}", "",
          "## Problèmes priorisés", ""]
     rank = {"high": 0, "medium": 1, "low": 2}
     for i in sorted(decision.get("issues", []), key=lambda x: rank.get(x.get("severity"), 3)):
@@ -364,8 +369,8 @@ def write_agent_report(decision: dict) -> None:
         if i.get("ungrounded_numbers"):
             flags.append("chiffres non retrouvés dans les outils : " + ", ".join(i["ungrounded_numbers"]))
         warn = f" [À CONTRÔLER : {' ; '.join(flags)}]" if flags else ""
-        mvp = "pertinent pour le MVP" if i.get("relevant_for_mvp") else "hors périmètre MVP"
-        L += [f"- **[{i.get('severity')}] {i.get('table')}.{i.get('column')}** ({mvp}){warn}",
+        kpi = "touche les KPI" if i.get("relevant_for_kpis") else "sans effet sur les KPI"
+        L += [f"- **[{i.get('severity')}] {i.get('table')}.{i.get('column')}** ({kpi}){warn}",
               f"  - Diagnostic : {i.get('diagnosis')}",
               f"  - Preuve : {i.get('evidence')}",
               f"  - Action ETL : {i.get('action_for_etl')}"]
@@ -379,13 +384,15 @@ def write_agent_report(decision: dict) -> None:
         flag = "" if tr.get("verified") else " (catégorie non reconnue : ignorer)"
         L.append(f"- {tr.get('original')} -> {tr.get('english')} (confiance : {tr.get('confidence')}){flag}")
 
-    L += ["", "## Limites des données pour le MVP", ""]
-    L += [f"- {x}" for x in decision.get("data_limitations", [])]
+    L += ["", "## Données manquantes pour le projet : décisions à prendre", ""]
+    for g in decision.get("data_gaps", []):
+        L += [f"- **{g.get('need')}** (KPI touchés : {', '.join(g.get('kpis_affected', []))})",
+              f"  - Options : {' ; '.join(g.get('options', []))}",
+              f"  - Recommandation : {g.get('recommendation')}"]
 
     L += ["", "## Traçabilité : outils appelés par l'agent", ""]
     L += [f"- étape {t['step']} : {t['tool']} {t['args']}" for t in decision.get("trace", [])]
     (OUT_DIR / "agent_report.md").write_text("\n".join(L), encoding="utf-8")
-
 
 if __name__ == "__main__":
     print("Le Data Profiler Agent réfléchit...")
