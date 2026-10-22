@@ -1,0 +1,1137 @@
+{
+  "tables": {
+    "olist_customers_dataset": {
+      "rows": 99441,
+      "columns_count": 5,
+      "duplicates": 0,
+      "duplicates_pct": 0.0,
+      "avg_missing_pct": 0.0,
+      "avg_outlier_pct": 0.0,
+      "reliability_score": 100.0,
+      "key_candidates": [
+        "customer_id"
+      ],
+      "columns": {
+        "customer_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 99441,
+          "hints": []
+        },
+        "customer_unique_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 96096,
+          "hints": []
+        },
+        "customer_zip_code_prefix": {
+          "dtype": "int64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 14994,
+          "hints": [],
+          "min": 1003.0,
+          "max": 99990.0,
+          "mean": 35137.47,
+          "negatives": 0,
+          "negatives_unexpected": false
+        },
+        "customer_city": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 4119,
+          "hints": []
+        },
+        "customer_state": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 27,
+          "hints": [],
+          "top_values": {
+            "SP": 41746,
+            "RJ": 12852,
+            "MG": 11635,
+            "RS": 5466,
+            "PR": 5045,
+            "SC": 3637,
+            "BA": 3380,
+            "DF": 2140,
+            "ES": 2033,
+            "GO": 2020
+          }
+        }
+      }
+    },
+    "olist_geolocation_dataset": {
+      "rows": 1000163,
+      "columns_count": 5,
+      "duplicates": 261831,
+      "duplicates_pct": 26.18,
+      "avg_missing_pct": 0.0,
+      "avg_outlier_pct": 0.0,
+      "reliability_score": 73.8,
+      "key_candidates": [],
+      "columns": {
+        "geolocation_zip_code_prefix": {
+          "dtype": "int64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 19015,
+          "hints": [],
+          "min": 1001.0,
+          "max": 99990.0,
+          "mean": 36574.17,
+          "negatives": 0,
+          "negatives_unexpected": false
+        },
+        "geolocation_lat": {
+          "dtype": "float64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 717360,
+          "hints": [],
+          "min": -36.6053744107061,
+          "max": 45.06593318269697,
+          "mean": -21.18,
+          "negatives": 998827,
+          "negatives_unexpected": false
+        },
+        "geolocation_lng": {
+          "dtype": "float64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 717613,
+          "hints": [],
+          "min": -101.46676644931476,
+          "max": 121.10539381057764,
+          "mean": -46.39,
+          "negatives": 1000160,
+          "negatives_unexpected": false
+        },
+        "geolocation_city": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 8011,
+          "hints": []
+        },
+        "geolocation_state": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 27,
+          "hints": [],
+          "top_values": {
+            "SP": 404268,
+            "MG": 126336,
+            "RJ": 121169,
+            "RS": 61851,
+            "PR": 57859,
+            "SC": 38328,
+            "BA": 36045,
+            "GO": 20139,
+            "ES": 16748,
+            "PE": 16432
+          }
+        }
+      }
+    },
+    "olist_order_items_dataset": {
+      "rows": 112650,
+      "columns_count": 7,
+      "duplicates": 0,
+      "duplicates_pct": 0.0,
+      "avg_missing_pct": 0.0,
+      "avg_outlier_pct": 4.27,
+      "reliability_score": 97.9,
+      "key_candidates": [],
+      "columns": {
+        "order_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 98666,
+          "hints": []
+        },
+        "order_item_id": {
+          "dtype": "int64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 21,
+          "hints": [],
+          "min": 1.0,
+          "max": 21.0,
+          "mean": 1.2,
+          "negatives": 0,
+          "negatives_unexpected": false
+        },
+        "product_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 32951,
+          "hints": []
+        },
+        "seller_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 3095,
+          "hints": []
+        },
+        "shipping_limit_date": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 93318,
+          "hints": [
+            "dates stockées comme texte (à convertir)"
+          ],
+          "date_range": {
+            "min": "2016-09-19 00:15:34",
+            "max": "2020-04-09 22:35:08"
+          },
+          "monthly_counts": {
+            "2016-09": 4,
+            "2016-10": 365,
+            "2016-12": 1,
+            "2017-01": 681,
+            "2017-02": 1866,
+            "2017-03": 2751,
+            "2017-04": 2364,
+            "2017-05": 4150,
+            "2017-06": 3801,
+            "2017-07": 4116,
+            "2017-08": 5042,
+            "2017-09": 4724,
+            "2017-10": 5189,
+            "2017-11": 7355,
+            "2017-12": 7726,
+            "2018-01": 7492,
+            "2018-02": 7375,
+            "2018-03": 8759,
+            "2018-04": 7637,
+            "2018-05": 8765,
+            "2018-06": 6897,
+            "2018-07": 6672,
+            "2018-08": 8815,
+            "2018-09": 99,
+            "2020-02": 2,
+            "2020-04": 2
+          }
+        },
+        "price": {
+          "dtype": "float64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 5968,
+          "hints": [],
+          "min": 0.85,
+          "max": 6735.0,
+          "mean": 120.65,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 4074,
+          "outlier_pct": 3.62
+        },
+        "freight_value": {
+          "dtype": "float64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 6999,
+          "hints": [],
+          "min": 0.0,
+          "max": 409.68,
+          "mean": 19.99,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 5538,
+          "outlier_pct": 4.92
+        }
+      }
+    },
+    "olist_order_payments_dataset": {
+      "rows": 103886,
+      "columns_count": 5,
+      "duplicates": 0,
+      "duplicates_pct": 0.0,
+      "avg_missing_pct": 0.0,
+      "avg_outlier_pct": 2.02,
+      "reliability_score": 99.0,
+      "key_candidates": [],
+      "columns": {
+        "order_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 99440,
+          "hints": []
+        },
+        "payment_sequential": {
+          "dtype": "int64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 29,
+          "hints": [],
+          "min": 1.0,
+          "max": 29.0,
+          "mean": 1.09,
+          "negatives": 0,
+          "negatives_unexpected": false
+        },
+        "payment_type": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 5,
+          "hints": [],
+          "top_values": {
+            "credit_card": 76795,
+            "boleto": 19784,
+            "voucher": 5775,
+            "debit_card": 1529,
+            "not_defined": 3
+          }
+        },
+        "payment_installments": {
+          "dtype": "int64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 24,
+          "hints": [],
+          "min": 0.0,
+          "max": 24.0,
+          "mean": 2.85,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 169,
+          "outlier_pct": 0.16
+        },
+        "payment_value": {
+          "dtype": "float64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 29077,
+          "hints": [],
+          "min": 0.0,
+          "max": 13664.08,
+          "mean": 154.1,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 4046,
+          "outlier_pct": 3.89
+        }
+      }
+    },
+    "olist_order_reviews_dataset": {
+      "rows": 99224,
+      "columns_count": 7,
+      "duplicates": 0,
+      "duplicates_pct": 0.0,
+      "avg_missing_pct": 0.0,
+      "avg_outlier_pct": 0.0,
+      "reliability_score": 100.0,
+      "key_candidates": [],
+      "columns": {
+        "review_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 98410,
+          "hints": []
+        },
+        "order_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 98673,
+          "hints": []
+        },
+        "review_score": {
+          "dtype": "int64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 5,
+          "hints": [],
+          "min": 1.0,
+          "max": 5.0,
+          "mean": 4.09,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 0,
+          "outlier_pct": 0.0,
+          "top_values": {
+            "5": 57328,
+            "4": 19142,
+            "1": 11424,
+            "3": 8179,
+            "2": 3151
+          }
+        },
+        "review_comment_title": {
+          "dtype": "str",
+          "missing_count": 87656,
+          "missing_pct": 88.34,
+          "unique": 4527,
+          "hints": []
+        },
+        "review_comment_message": {
+          "dtype": "str",
+          "missing_count": 58247,
+          "missing_pct": 58.7,
+          "unique": 36159,
+          "hints": []
+        },
+        "review_creation_date": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 636,
+          "hints": [
+            "dates stockées comme texte (à convertir)"
+          ],
+          "date_range": {
+            "min": "2016-10-02 00:00:00",
+            "max": "2018-08-31 00:00:00"
+          },
+          "monthly_counts": {
+            "2016-10": 179,
+            "2016-11": 101,
+            "2016-12": 45,
+            "2017-01": 239,
+            "2017-02": 1413,
+            "2017-03": 2481,
+            "2017-04": 2055,
+            "2017-05": 3710,
+            "2017-06": 3440,
+            "2017-07": 3503,
+            "2017-08": 4503,
+            "2017-09": 4199,
+            "2017-10": 4424,
+            "2017-11": 4786,
+            "2017-12": 7982,
+            "2018-01": 6179,
+            "2018-02": 6101,
+            "2018-03": 7803,
+            "2018-04": 7287,
+            "2018-05": 7458,
+            "2018-06": 6715,
+            "2018-07": 5634,
+            "2018-08": 8987
+          }
+        },
+        "review_answer_timestamp": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 98248,
+          "hints": [
+            "dates stockées comme texte (à convertir)"
+          ],
+          "date_range": {
+            "min": "2016-10-07 18:32:28",
+            "max": "2018-10-29 12:27:35"
+          },
+          "monthly_counts": {
+            "2016-10": 151,
+            "2016-11": 110,
+            "2016-12": 50,
+            "2017-01": 198,
+            "2017-02": 1368,
+            "2017-03": 2331,
+            "2017-04": 2123,
+            "2017-05": 3547,
+            "2017-06": 3446,
+            "2017-07": 3582,
+            "2017-08": 4357,
+            "2017-09": 4150,
+            "2017-10": 4542,
+            "2017-11": 4632,
+            "2017-12": 7794,
+            "2018-01": 6273,
+            "2018-02": 6096,
+            "2018-03": 7656,
+            "2018-04": 7619,
+            "2018-05": 7518,
+            "2018-06": 6366,
+            "2018-07": 5831,
+            "2018-08": 8816,
+            "2018-09": 632,
+            "2018-10": 36
+          }
+        }
+      }
+    },
+    "olist_orders_dataset": {
+      "rows": 99441,
+      "columns_count": 8,
+      "duplicates": 0,
+      "duplicates_pct": 0.0,
+      "avg_missing_pct": 0.62,
+      "avg_outlier_pct": 0.0,
+      "reliability_score": 99.4,
+      "key_candidates": [
+        "order_id",
+        "customer_id"
+      ],
+      "columns": {
+        "order_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 99441,
+          "hints": []
+        },
+        "customer_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 99441,
+          "hints": []
+        },
+        "order_status": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 8,
+          "hints": [],
+          "top_values": {
+            "delivered": 96478,
+            "shipped": 1107,
+            "canceled": 625,
+            "unavailable": 609,
+            "invoiced": 314,
+            "processing": 301,
+            "created": 5,
+            "approved": 2
+          }
+        },
+        "order_purchase_timestamp": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 98875,
+          "hints": [
+            "dates stockées comme texte (à convertir)"
+          ],
+          "date_range": {
+            "min": "2016-09-04 21:15:19",
+            "max": "2018-10-17 17:30:18"
+          },
+          "monthly_counts": {
+            "2016-09": 4,
+            "2016-10": 324,
+            "2016-12": 1,
+            "2017-01": 800,
+            "2017-02": 1780,
+            "2017-03": 2682,
+            "2017-04": 2404,
+            "2017-05": 3700,
+            "2017-06": 3245,
+            "2017-07": 4026,
+            "2017-08": 4331,
+            "2017-09": 4285,
+            "2017-10": 4631,
+            "2017-11": 7544,
+            "2017-12": 5673,
+            "2018-01": 7269,
+            "2018-02": 6728,
+            "2018-03": 7211,
+            "2018-04": 6939,
+            "2018-05": 6873,
+            "2018-06": 6167,
+            "2018-07": 6292,
+            "2018-08": 6512,
+            "2018-09": 16,
+            "2018-10": 4
+          }
+        },
+        "order_approved_at": {
+          "dtype": "str",
+          "missing_count": 160,
+          "missing_pct": 0.16,
+          "unique": 90733,
+          "hints": [
+            "dates stockées comme texte (à convertir)"
+          ],
+          "date_range": {
+            "min": "2016-09-15 12:16:38",
+            "max": "2018-09-03 17:40:06"
+          },
+          "monthly_counts": {
+            "2016-09": 1,
+            "2016-10": 320,
+            "2016-12": 1,
+            "2017-01": 760,
+            "2017-02": 1765,
+            "2017-03": 2689,
+            "2017-04": 2374,
+            "2017-05": 3693,
+            "2017-06": 3252,
+            "2017-07": 3974,
+            "2017-08": 4348,
+            "2017-09": 4301,
+            "2017-10": 4590,
+            "2017-11": 7395,
+            "2017-12": 5832,
+            "2018-01": 7187,
+            "2018-02": 6706,
+            "2018-03": 7288,
+            "2018-04": 6778,
+            "2018-05": 7066,
+            "2018-06": 6164,
+            "2018-07": 6176,
+            "2018-08": 6620,
+            "2018-09": 1
+          }
+        },
+        "order_delivered_carrier_date": {
+          "dtype": "str",
+          "missing_count": 1783,
+          "missing_pct": 1.79,
+          "unique": 81018,
+          "hints": [
+            "dates stockées comme texte (à convertir)"
+          ],
+          "date_range": {
+            "min": "2016-10-08 10:34:01",
+            "max": "2018-09-11 19:48:28"
+          },
+          "monthly_counts": {
+            "2016-10": 247,
+            "2016-11": 32,
+            "2016-12": 2,
+            "2017-01": 612,
+            "2017-02": 1517,
+            "2017-03": 2717,
+            "2017-04": 2141,
+            "2017-05": 3709,
+            "2017-06": 3263,
+            "2017-07": 3710,
+            "2017-08": 4328,
+            "2017-09": 4131,
+            "2017-10": 4482,
+            "2017-11": 6637,
+            "2017-12": 6081,
+            "2018-01": 7059,
+            "2018-02": 6605,
+            "2018-03": 7178,
+            "2018-04": 7002,
+            "2018-05": 6981,
+            "2018-06": 6108,
+            "2018-07": 6055,
+            "2018-08": 7058,
+            "2018-09": 3
+          }
+        },
+        "order_delivered_customer_date": {
+          "dtype": "str",
+          "missing_count": 2965,
+          "missing_pct": 2.98,
+          "unique": 95664,
+          "hints": [
+            "dates stockées comme texte (à convertir)"
+          ],
+          "date_range": {
+            "min": "2016-10-11 13:46:32",
+            "max": "2018-10-17 13:22:46"
+          },
+          "monthly_counts": {
+            "2016-10": 208,
+            "2016-11": 60,
+            "2016-12": 4,
+            "2017-01": 283,
+            "2017-02": 1351,
+            "2017-03": 2382,
+            "2017-04": 1849,
+            "2017-05": 3751,
+            "2017-06": 3223,
+            "2017-07": 3455,
+            "2017-08": 4302,
+            "2017-09": 3965,
+            "2017-10": 4494,
+            "2017-11": 4670,
+            "2017-12": 7205,
+            "2018-01": 6597,
+            "2018-02": 5850,
+            "2018-03": 6825,
+            "2018-04": 7850,
+            "2018-05": 7111,
+            "2018-06": 6829,
+            "2018-07": 5839,
+            "2018-08": 8314,
+            "2018-09": 56,
+            "2018-10": 3
+          }
+        },
+        "order_estimated_delivery_date": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 459,
+          "hints": [
+            "dates stockées comme texte (à convertir)"
+          ],
+          "date_range": {
+            "min": "2016-09-30 00:00:00",
+            "max": "2018-11-12 00:00:00"
+          },
+          "monthly_counts": {
+            "2016-09": 1,
+            "2016-10": 6,
+            "2016-11": 171,
+            "2016-12": 148,
+            "2017-01": 3,
+            "2017-02": 316,
+            "2017-03": 2801,
+            "2017-04": 2235,
+            "2017-05": 3037,
+            "2017-06": 3639,
+            "2017-07": 3331,
+            "2017-08": 4367,
+            "2017-09": 4420,
+            "2017-10": 4145,
+            "2017-11": 4705,
+            "2017-12": 7318,
+            "2018-01": 5607,
+            "2018-02": 6304,
+            "2018-03": 8779,
+            "2018-04": 6766,
+            "2018-05": 8008,
+            "2018-06": 4660,
+            "2018-07": 7210,
+            "2018-08": 9400,
+            "2018-09": 2001,
+            "2018-10": 62,
+            "2018-11": 1
+          }
+        }
+      }
+    },
+    "olist_products_dataset": {
+      "rows": 32951,
+      "columns_count": 9,
+      "duplicates": 0,
+      "duplicates_pct": 0.0,
+      "avg_missing_pct": 0.83,
+      "avg_outlier_pct": 2.12,
+      "reliability_score": 98.1,
+      "key_candidates": [
+        "product_id"
+      ],
+      "columns": {
+        "product_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 32951,
+          "hints": []
+        },
+        "product_category_name": {
+          "dtype": "str",
+          "missing_count": 610,
+          "missing_pct": 1.85,
+          "unique": 73,
+          "hints": []
+        },
+        "product_name_lenght": {
+          "dtype": "float64",
+          "missing_count": 610,
+          "missing_pct": 1.85,
+          "unique": 66,
+          "hints": [],
+          "min": 5.0,
+          "max": 76.0,
+          "mean": 48.48,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 0,
+          "outlier_pct": 0.0
+        },
+        "product_description_lenght": {
+          "dtype": "float64",
+          "missing_count": 610,
+          "missing_pct": 1.85,
+          "unique": 2960,
+          "hints": [],
+          "min": 4.0,
+          "max": 3992.0,
+          "mean": 771.5,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 565,
+          "outlier_pct": 1.75
+        },
+        "product_photos_qty": {
+          "dtype": "float64",
+          "missing_count": 610,
+          "missing_pct": 1.85,
+          "unique": 19,
+          "hints": [],
+          "min": 1.0,
+          "max": 20.0,
+          "mean": 2.19,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 209,
+          "outlier_pct": 0.65
+        },
+        "product_weight_g": {
+          "dtype": "float64",
+          "missing_count": 2,
+          "missing_pct": 0.01,
+          "unique": 2204,
+          "hints": [],
+          "min": 0.0,
+          "max": 40425.0,
+          "mean": 2276.47,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 3073,
+          "outlier_pct": 9.33
+        },
+        "product_length_cm": {
+          "dtype": "float64",
+          "missing_count": 2,
+          "missing_pct": 0.01,
+          "unique": 99,
+          "hints": [],
+          "min": 7.0,
+          "max": 105.0,
+          "mean": 30.82,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 349,
+          "outlier_pct": 1.06
+        },
+        "product_height_cm": {
+          "dtype": "float64",
+          "missing_count": 2,
+          "missing_pct": 0.01,
+          "unique": 102,
+          "hints": [],
+          "min": 2.0,
+          "max": 105.0,
+          "mean": 16.94,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 559,
+          "outlier_pct": 1.7
+        },
+        "product_width_cm": {
+          "dtype": "float64",
+          "missing_count": 2,
+          "missing_pct": 0.01,
+          "unique": 95,
+          "hints": [],
+          "min": 6.0,
+          "max": 118.0,
+          "mean": 23.2,
+          "negatives": 0,
+          "negatives_unexpected": false,
+          "outliers": 108,
+          "outlier_pct": 0.33
+        }
+      }
+    },
+    "olist_sellers_dataset": {
+      "rows": 3095,
+      "columns_count": 4,
+      "duplicates": 0,
+      "duplicates_pct": 0.0,
+      "avg_missing_pct": 0.0,
+      "avg_outlier_pct": 0.0,
+      "reliability_score": 100.0,
+      "key_candidates": [
+        "seller_id"
+      ],
+      "columns": {
+        "seller_id": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 3095,
+          "hints": []
+        },
+        "seller_zip_code_prefix": {
+          "dtype": "int64",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 2246,
+          "hints": [],
+          "min": 1001.0,
+          "max": 99730.0,
+          "mean": 32291.06,
+          "negatives": 0,
+          "negatives_unexpected": false
+        },
+        "seller_city": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 611,
+          "hints": []
+        },
+        "seller_state": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 23,
+          "hints": [],
+          "top_values": {
+            "SP": 1849,
+            "PR": 349,
+            "MG": 244,
+            "SC": 190,
+            "RJ": 171,
+            "RS": 129,
+            "GO": 40,
+            "DF": 30,
+            "ES": 23,
+            "BA": 19
+          }
+        }
+      }
+    },
+    "product_category_name_translation": {
+      "rows": 71,
+      "columns_count": 2,
+      "duplicates": 0,
+      "duplicates_pct": 0.0,
+      "avg_missing_pct": 0.0,
+      "avg_outlier_pct": 0.0,
+      "reliability_score": 100.0,
+      "key_candidates": [
+        "product_category_name",
+        "product_category_name_english"
+      ],
+      "columns": {
+        "product_category_name": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 71,
+          "hints": []
+        },
+        "product_category_name_english": {
+          "dtype": "str",
+          "missing_count": 0,
+          "missing_pct": 0.0,
+          "unique": 71,
+          "hints": []
+        }
+      }
+    }
+  },
+  "relations": [
+    {
+      "child": "olist_orders_dataset.customer_id",
+      "parent": "olist_customers_dataset.customer_id",
+      "checked_rows": 99441,
+      "orphan_rows": 0,
+      "orphan_distinct_values": 0,
+      "orphan_pct": 0.0,
+      "orphan_examples": {}
+    },
+    {
+      "child": "olist_order_items_dataset.order_id",
+      "parent": "olist_orders_dataset.order_id",
+      "checked_rows": 112650,
+      "orphan_rows": 0,
+      "orphan_distinct_values": 0,
+      "orphan_pct": 0.0,
+      "orphan_examples": {}
+    },
+    {
+      "child": "olist_order_items_dataset.product_id",
+      "parent": "olist_products_dataset.product_id",
+      "checked_rows": 112650,
+      "orphan_rows": 0,
+      "orphan_distinct_values": 0,
+      "orphan_pct": 0.0,
+      "orphan_examples": {}
+    },
+    {
+      "child": "olist_order_items_dataset.seller_id",
+      "parent": "olist_sellers_dataset.seller_id",
+      "checked_rows": 112650,
+      "orphan_rows": 0,
+      "orphan_distinct_values": 0,
+      "orphan_pct": 0.0,
+      "orphan_examples": {}
+    },
+    {
+      "child": "olist_order_payments_dataset.order_id",
+      "parent": "olist_orders_dataset.order_id",
+      "checked_rows": 103886,
+      "orphan_rows": 0,
+      "orphan_distinct_values": 0,
+      "orphan_pct": 0.0,
+      "orphan_examples": {}
+    },
+    {
+      "child": "olist_order_reviews_dataset.order_id",
+      "parent": "olist_orders_dataset.order_id",
+      "checked_rows": 99224,
+      "orphan_rows": 0,
+      "orphan_distinct_values": 0,
+      "orphan_pct": 0.0,
+      "orphan_examples": {}
+    },
+    {
+      "child": "olist_products_dataset.product_category_name",
+      "parent": "product_category_name_translation.product_category_name",
+      "checked_rows": 32341,
+      "orphan_rows": 13,
+      "orphan_distinct_values": 2,
+      "orphan_pct": 0.04,
+      "orphan_examples": {
+        "portateis_cozinha_e_preparadores_de_alimentos": 10,
+        "pc_gamer": 3
+      }
+    }
+  ],
+  "detected_relations": [
+    {
+      "child": "olist_orders_dataset.customer_id",
+      "parent": "olist_customers_dataset.customer_id",
+      "match_pct": 100.0,
+      "type": "1-1"
+    },
+    {
+      "child": "olist_order_items_dataset.order_id",
+      "parent": "olist_orders_dataset.order_id",
+      "match_pct": 100.0,
+      "type": "N-1"
+    },
+    {
+      "child": "olist_order_payments_dataset.order_id",
+      "parent": "olist_orders_dataset.order_id",
+      "match_pct": 100.0,
+      "type": "N-1"
+    },
+    {
+      "child": "olist_order_reviews_dataset.order_id",
+      "parent": "olist_orders_dataset.order_id",
+      "match_pct": 100.0,
+      "type": "N-1"
+    },
+    {
+      "child": "olist_order_items_dataset.product_id",
+      "parent": "olist_products_dataset.product_id",
+      "match_pct": 100.0,
+      "type": "N-1"
+    },
+    {
+      "child": "olist_order_items_dataset.seller_id",
+      "parent": "olist_sellers_dataset.seller_id",
+      "match_pct": 100.0,
+      "type": "N-1"
+    },
+    {
+      "child": "olist_products_dataset.product_category_name",
+      "parent": "product_category_name_translation.product_category_name",
+      "match_pct": 99.96,
+      "type": "N-1"
+    }
+  ],
+  "business_rules": [
+    {
+      "rule": "Dates de livraison client manquantes (répartition par statut)",
+      "table": "olist_orders_dataset",
+      "violations": 2965,
+      "total": 99441,
+      "pct": 2.982,
+      "comment": "statuts : shipped: 1107; canceled: 619; unavailable: 609; invoiced: 314; processing: 301",
+      "informative": true
+    },
+    {
+      "rule": "Commandes 'delivered' sans date de livraison client",
+      "table": "olist_orders_dataset",
+      "violations": 8,
+      "total": 96478,
+      "pct": 0.008,
+      "comment": "",
+      "informative": false
+    },
+    {
+      "rule": "Commandes non 'delivered' avec une date de livraison client",
+      "table": "olist_orders_dataset",
+      "violations": 6,
+      "total": 2963,
+      "pct": 0.202,
+      "comment": "",
+      "informative": false
+    },
+    {
+      "rule": "Commandes sans aucune ligne d'article",
+      "table": "olist_orders_dataset",
+      "violations": 775,
+      "total": 99441,
+      "pct": 0.779,
+      "comment": "statuts : unavailable: 603; canceled: 164; created: 5; invoiced: 2; shipped: 1",
+      "informative": false
+    },
+    {
+      "rule": "Commandes sans aucun paiement",
+      "table": "olist_orders_dataset",
+      "violations": 1,
+      "total": 99441,
+      "pct": 0.001,
+      "comment": "statuts : delivered: 1",
+      "informative": false
+    },
+    {
+      "rule": "Livraison client antérieure à la date d'achat",
+      "table": "olist_orders_dataset",
+      "violations": 0,
+      "total": 96476,
+      "pct": 0.0,
+      "comment": "",
+      "informative": false
+    },
+    {
+      "rule": "Lignes d'article avec un prix <= 0",
+      "table": "olist_order_items_dataset",
+      "violations": 0,
+      "total": 112650,
+      "pct": 0.0,
+      "comment": "",
+      "informative": false
+    },
+    {
+      "rule": "Produits avec un poids égal à 0",
+      "table": "olist_products_dataset",
+      "violations": 4,
+      "total": 32949,
+      "pct": 0.012,
+      "comment": "",
+      "informative": false
+    },
+    {
+      "rule": "Total articles + livraison différent du total payé (écart > 1)",
+      "table": "olist_order_items_dataset",
+      "violations": 249,
+      "total": 98665,
+      "pct": 0.252,
+      "comment": "à investiguer avant de choisir la définition du chiffre d'affaires (articles ou paiements)",
+      "informative": false
+    }
+  ],
+  "relation_detection_eval": {
+    "declared": 7,
+    "retrieved": 7,
+    "extra": 0,
+    "missed": []
+  },
+  "score_details": {
+    "tables_mean": 96.5,
+    "relations": 100.0,
+    "consistency": 99.8
+  },
+  "global_score": 97.8
+}
